@@ -17,14 +17,7 @@
             color: #333;
         }
 
-        .forum-container {
-            width: 60%;
-            margin: 20px auto;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-
+        .forum-container,
         .form-container {
             width: 60%;
             margin: 20px auto;
@@ -42,7 +35,8 @@
             cursor: pointer;
         }
 
-        .forum-post {
+        .forum-post,
+        .note-item {
             border-bottom: 1px solid #ddd;
             padding: 10px;
             text-align: left;
@@ -63,12 +57,33 @@
             cursor: pointer;
             border-radius: 4px;
         }
+
+        .no-data {
+            color: #888;
+            font-style: italic;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
 
 <body>
-<button class="back-button" onclick="goBack()">←</button>
-    <h1>Devamsızlık Bilgisi</h1>
+    <button class="back-button" onclick="goBack()">←</button>
+    <h1>Devamsızlık ve Not Bilgisi</h1>
 
     <div class="forum-container">
         <?php
@@ -96,7 +111,7 @@
                 echo "</div>";
             }
         } else {
-            echo "<p>Devamsızlık bilgisi bulunmamaktadır.</p>";
+            echo "<p class='no-data'>Devamsızlık bilgisi bulunmamaktadır.</p>";
         }
 
         // Veritabanı bağlantısını kapat
@@ -108,44 +123,40 @@
         <?php
         // Veritabanı bağlantısı ve diğer gerekli dosyaların include edilmesi
         include 'database.php';
-
+        echo "<h1>Puan Durumları</h1>";
         // Öğrencinin kendi not bilgilerini sorgula
         $ogrenciId = $_SESSION['id'];
-        $query = "SELECT dersler.dersAdi AS ders_adi, notlar.s1, notlar.s2, notlar.proje, notlar.ortalama
-                  FROM notlar
-                  JOIN dersler ON notlar.ders_id = dersler.id
-                  WHERE notlar.ogrenci_id = '$ogrenciId'";
+        $query = "SELECT sınavlar.ders_adi, sınavlar.sinav1, sınavlar.sinav2, sınavlar.proje
+                FROM sınavlar
+                WHERE sınavlar.ogrenci_id = '$ogrenciId'";
 
         $result = $conn->query($query);
 
         if ($result->num_rows > 0) {
-            echo "<form>";
+            echo "<table>";
+            echo "<tr><th>Ders Adı</th><th>1. Sınav</th><th>2. Sınav</th><th>Proje</th><th>Ders Ortalaması</th></tr>";
             while ($row = $result->fetch_assoc()) {
                 $dersAdi = $row["ders_adi"];
-                $s1 = $row["s1"];
-                $s2 = $row["s2"];
+                $sinav1 = $row["sinav1"];
+                $sinav2 = $row["sinav2"];
                 $proje = $row["proje"];
-                $ortalama = $row["ortalama"];
 
-                echo "<label for='ders_adi'>Ders Adı:</label>";
-                echo "<input type='text' id='ders_adi' name='ders_adi' value='$dersAdi' readonly><br>";
+                // Ortalamayı hesapla
+                $ortalama = ($sinav1 + $sinav2 + $proje) / 3;
 
-                echo "<label for='s1'>1. Sınav:</label>";
-                echo "<input type='text' id='s1' name='s1' value='$s1' readonly><br>";
-
-                echo "<label for='s2'>2. Sınav:</label>";
-                echo "<input type='text' id='s2' name='s2' value='$s2' readonly><br>";
-
-                echo "<label for='proje'>Proje:</label>";
-                echo "<input type='text' id='proje' name='proje' value='$proje' readonly><br>";
-
-                echo "<label for='ortalama'>Ortalama Puan:</label>";
-                echo "<input type='text' id='ortalama' name='ortalama' value='$ortalama' readonly><br>";
+                echo "<tr>";
+                echo "<td>$dersAdi</td>";
+                echo "<td>$sinav1</td>";
+                echo "<td>$sinav2</td>";
+                echo "<td>$proje</td>";
+                echo "<td>$ortalama</td>";
+                echo "</tr>";
             }
-            echo "</form>";
+            echo "</table>";
         } else {
-            echo "<p>Not bilgisi bulunmamaktadır.</p>";
+            echo "<p class='no-data'>Not bilgisi bulunmamaktadır.</p>";
         }
+
 
         // Veritabanı bağlantısını kapat
         $conn->close();
@@ -153,8 +164,9 @@
     </div>
 </body>
 <script>
-        function goBack() {
-            window.location.href = "ogrenciProfili.php";
-        }
-    </script>
+    function goBack() {
+        window.location.href = "ogrenciProfili.php";
+    }
+</script>
+
 </html>

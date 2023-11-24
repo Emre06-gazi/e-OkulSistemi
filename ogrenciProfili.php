@@ -78,6 +78,9 @@
             font-size: 14px;
             cursor: pointer;
             border-radius: 4px;
+            position: absolute; /* Yeni eklenen stil özelliği */
+            left: 10px; /* Yeni eklenen stil özelliği */
+            top: 10px; /* Yeni eklenen stil özelliği */
         }
     </style>
 </head>
@@ -101,7 +104,39 @@
         </div>
 
         <div id="calendar-container">
-            <?php include 'tarihSaat.php'; ?>
+        <?php include 'tarihSaat.php'; ?>
+            <br></br>
+            <h2>Etkinlikler</h2>
+            <table border="1" style="width: 80%; margin-top: 15px;">
+                <tr>
+                    <th>Tarih</th>
+                    <th>Etkinlik Adı</th>
+                    <th>Saat</th>
+                </tr>
+                <?php
+                include 'database.php';
+
+                // Etkinlikleri çek
+                $sql = "SELECT event_date, event_name, event_hour FROM events";
+                $result = $conn->query($sql);
+
+                if ($result->num_rows > 0) {
+                    // Etkinlikleri tabloya ekle
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>" . $row["event_date"] . "</td>";
+                        echo "<td>" . $row["event_name"] . "</td>";
+                        echo "<td>" . $row["event_hour"] . "</td>";
+                        echo "</tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='3'>Etkinlik bulunamadı.</td></tr>";
+                }
+
+                // Bağlantıyı kapat
+                $conn->close();
+                ?>
+            </table>
         </div>
     </div>
 

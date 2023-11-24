@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 23 Kas 2023, 14:01:24
+-- Üretim Zamanı: 24 Kas 2023, 14:46:02
 -- Sunucu sürümü: 10.4.28-MariaDB
 -- PHP Sürümü: 8.2.4
 
@@ -142,24 +142,32 @@ CREATE TABLE `devamsizlik` (
 --
 
 INSERT INTO `devamsizlik` (`id`, `ogrenci_id`, `devamsizlik_suresi`) VALUES
-(1, 22, 1),
+(1, 22, 22),
 (3, 14, 12),
 (4, 13, 6),
 (5, 15, 3),
-(6, 23, 5);
+(6, 23, 5),
+(7, 24, 1);
 
 -- --------------------------------------------------------
 
 --
--- Tablo için tablo yapısı `etkinlikler`
+-- Tablo için tablo yapısı `events`
 --
 
-CREATE TABLE `etkinlikler` (
+CREATE TABLE `events` (
   `id` int(11) NOT NULL,
-  `tarih` date DEFAULT NULL,
-  `etkinlik_adi` varchar(255) DEFAULT NULL,
-  `etkinlik_saati` time DEFAULT NULL
+  `event_date` date DEFAULT NULL,
+  `event_name` varchar(255) NOT NULL,
+  `event_hour` time NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+--
+-- Tablo döküm verisi `events`
+--
+
+INSERT INTO `events` (`id`, `event_date`, `event_name`, `event_hour`) VALUES
+(1, '2023-03-11', 'Otofest', '12:50:00');
 
 -- --------------------------------------------------------
 
@@ -175,13 +183,6 @@ CREATE TABLE `izin_tablosu` (
   `aciklama` text DEFAULT NULL,
   `onay_durumu` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
---
--- Tablo döküm verisi `izin_tablosu`
---
-
-INSERT INTO `izin_tablosu` (`id`, `kullanici_id`, `baslangic_tarihi`, `bitis_tarihi`, `aciklama`, `onay_durumu`) VALUES
-(9, 3, '2023-11-11', '2023-11-18', 'asdasd', 0);
 
 -- --------------------------------------------------------
 
@@ -233,7 +234,8 @@ INSERT INTO `kullanici` (`id`, `kullanici_adi`, `email`, `sifre`, `rol`) VALUES
 (34, 'Fırat', 'eeeee@hotmail.com', 'dddd', '2'),
 (35, 'Fırat Aydınus', 'firat@email.com', 'e123', '1'),
 (36, 'Emre', 'emre@email.com', '12333', '0'),
-(37, 'Ugur Ayaaaa', 'emre_12eee13312@hotmail.com', '123', '2');
+(37, 'Ugur Ayaaaa', 'emre_12eee13312@hotmail.com', '123', '2'),
+(38, 'Kıraç Sarar', 'kirac@email.com', '123', '1');
 
 -- --------------------------------------------------------
 
@@ -298,7 +300,8 @@ INSERT INTO `mesajlar` (`id`, `alici_id`, `mesaj`, `tarih`, `gonderen_id`, `konu
 (41, 36, 'Hocam okul çok kötü he', '2023-11-23 09:33:57', 3, 'Okulun'),
 (42, 3, 'asdsad', '2023-11-23 09:39:01', 3, 'Firmanın Durumu'),
 (43, 3, 'sadsadas', '2023-11-23 09:39:37', 36, 'Firmanın Durumu'),
-(44, 36, 'asdas', '2023-11-23 09:39:59', 3, 'Firmanın Durumu');
+(44, 36, 'asdas', '2023-11-23 09:39:59', 3, 'Firmanın Durumu'),
+(45, 3, 'İzin tarihiniz onaylandı!', '2023-11-24 06:22:32', 36, '');
 
 -- --------------------------------------------------------
 
@@ -356,20 +359,6 @@ INSERT INTO `ogrenci` (`id`, `ad_soyad`, `email`, `sifre`, `sinif`) VALUES
 -- --------------------------------------------------------
 
 --
--- Tablo için tablo yapısı `ogrenci_sinav_proje_tarihleri`
---
-
-CREATE TABLE `ogrenci_sinav_proje_tarihleri` (
-  `id` int(11) NOT NULL,
-  `ogrenci_id` int(11) DEFAULT NULL,
-  `sinif` int(11) DEFAULT NULL,
-  `sinav_tarihi` date DEFAULT NULL,
-  `proje_tarihi` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
--- --------------------------------------------------------
-
---
 -- Tablo için tablo yapısı `ogretmen`
 --
 
@@ -390,7 +379,31 @@ INSERT INTO `ogretmen` (`id`, `ad_soyad`, `email`, `sifre`, `dersAdi`) VALUES
 (4, 'Meltem Büşra', 'meltem@email.com', '123', 'Fen Bilgisi'),
 (5, 'Zekeriya Ünal', 'zeko@email.com', '123', 'İngilizce'),
 (6, 'Hakan Safa', 'hakana@email.com', '123', 'Müzik'),
-(8, 'Fırat Aydınus', 'firat@email.com', 'e123', 'Sosyal Bilgiler');
+(8, 'Fırat Aydınus', 'firat@email.com', 'e123', 'Sosyal Bilgiler'),
+(9, 'Kıraç Sarar', 'kirac@email.com', '123', 'Beden Eğitimi');
+
+-- --------------------------------------------------------
+
+--
+-- Tablo için tablo yapısı `sınavlar`
+--
+
+CREATE TABLE `sınavlar` (
+  `id` int(11) NOT NULL,
+  `ogrenci_id` int(11) DEFAULT NULL,
+  `sinav1` int(11) DEFAULT 0,
+  `sinav2` int(11) DEFAULT 0,
+  `proje` int(11) DEFAULT 0,
+  `ders_adi` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+--
+-- Tablo döküm verisi `sınavlar`
+--
+
+INSERT INTO `sınavlar` (`id`, `ogrenci_id`, `sinav1`, `sinav2`, `proje`, `ders_adi`) VALUES
+(1, 14, 90, 80, 50, 'Fen Bilgisi'),
+(2, 21, 90, 50, 80, 'Fen Bilgisi');
 
 --
 -- Dökümü yapılmış tablolar için indeksler
@@ -417,9 +430,9 @@ ALTER TABLE `devamsizlik`
   ADD KEY `ogrenci_id` (`ogrenci_id`);
 
 --
--- Tablo için indeksler `etkinlikler`
+-- Tablo için indeksler `events`
 --
-ALTER TABLE `etkinlikler`
+ALTER TABLE `events`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -458,18 +471,18 @@ ALTER TABLE `ogrenci`
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- Tablo için indeksler `ogrenci_sinav_proje_tarihleri`
---
-ALTER TABLE `ogrenci_sinav_proje_tarihleri`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `ogrenci_id` (`ogrenci_id`);
-
---
 -- Tablo için indeksler `ogretmen`
 --
 ALTER TABLE `ogretmen`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Tablo için indeksler `sınavlar`
+--
+ALTER TABLE `sınavlar`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `ogrenci_id` (`ogrenci_id`);
 
 --
 -- Dökümü yapılmış tablolar için AUTO_INCREMENT değeri
@@ -485,13 +498,13 @@ ALTER TABLE `ders_programi`
 -- Tablo için AUTO_INCREMENT değeri `devamsizlik`
 --
 ALTER TABLE `devamsizlik`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- Tablo için AUTO_INCREMENT değeri `etkinlikler`
+-- Tablo için AUTO_INCREMENT değeri `events`
 --
-ALTER TABLE `etkinlikler`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `events`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `izin_tablosu`
@@ -503,13 +516,13 @@ ALTER TABLE `izin_tablosu`
 -- Tablo için AUTO_INCREMENT değeri `kullanici`
 --
 ALTER TABLE `kullanici`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `mesajlar`
 --
 ALTER TABLE `mesajlar`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `notlar`
@@ -524,16 +537,16 @@ ALTER TABLE `ogrenci`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
--- Tablo için AUTO_INCREMENT değeri `ogrenci_sinav_proje_tarihleri`
---
-ALTER TABLE `ogrenci_sinav_proje_tarihleri`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- Tablo için AUTO_INCREMENT değeri `ogretmen`
 --
 ALTER TABLE `ogretmen`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `sınavlar`
+--
+ALTER TABLE `sınavlar`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Dökümü yapılmış tablolar için kısıtlamalar
@@ -565,10 +578,10 @@ ALTER TABLE `notlar`
   ADD CONSTRAINT `notlar_ibfk_2` FOREIGN KEY (`ders_id`) REFERENCES `dersler` (`id`);
 
 --
--- Tablo kısıtlamaları `ogrenci_sinav_proje_tarihleri`
+-- Tablo kısıtlamaları `sınavlar`
 --
-ALTER TABLE `ogrenci_sinav_proje_tarihleri`
-  ADD CONSTRAINT `ogrenci_sinav_proje_tarihleri_ibfk_1` FOREIGN KEY (`ogrenci_id`) REFERENCES `ogrenci` (`id`);
+ALTER TABLE `sınavlar`
+  ADD CONSTRAINT `sınavlar_ibfk_1` FOREIGN KEY (`ogrenci_id`) REFERENCES `ogrenci` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

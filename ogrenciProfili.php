@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,17 +5,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Öğrenci Profili</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
     <style>
-        /* Diğer stiller buraya eklenebilir */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
         .container {
             text-align: center;
             margin: 20px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            position: relative;
+        }
+
+        .back-button {
+            background-color: #343a40;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            position: absolute;
+            left: 10px;
+            top: 10px;
         }
 
         h1 {
             color: #343a40;
-            font-family: 'Arial', sans-serif;
         }
 
         .button-container {
@@ -30,11 +53,16 @@
         .action-button {
             background-color: #007bff;
             color: #fff;
-            padding: 10px;
+            padding: 15px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .action-button:hover {
+            background-color: #0056b3;
         }
 
         #clock-container,
@@ -53,7 +81,6 @@
             margin: 5px 0;
         }
 
-        /* Özel stiller buraya ekleniyor */
         #clock-container,
         #calendar-container {
             background-color: #f8f9fa;
@@ -68,20 +95,29 @@
             color: #343a40;
             margin: 10px 0;
         }
-        .back-button {
-            background-color: #333;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 14px;
-            cursor: pointer;
-            border-radius: 4px;
-            position: absolute; /* Yeni eklenen stil özelliği */
-            left: 10px; /* Yeni eklenen stil özelliği */
-            top: 10px; /* Yeni eklenen stil özelliği */
-        }
+
+        /* Diğer stiller buraya eklenebilir */
+table {
+    width: 100%;
+    margin-top: 15px;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #343a40; /* Koyu gri renk */
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
     </style>
 </head>
 
@@ -104,10 +140,10 @@
         </div>
 
         <div id="calendar-container">
-        <?php include 'tarihSaat.php'; ?>
+            <?php include 'tarihSaat.php'; ?>
             <br></br>
             <h2>Etkinlikler</h2>
-            <table border="1" style="width: 80%; margin-top: 15px;">
+            <table border="1">
                 <tr>
                     <th>Tarih</th>
                     <th>Etkinlik Adı</th>
@@ -116,12 +152,10 @@
                 <?php
                 include 'database.php';
 
-                // Etkinlikleri çek
                 $sql = "SELECT event_date, event_name, event_hour FROM events";
                 $result = $conn->query($sql);
 
                 if ($result->num_rows > 0) {
-                    // Etkinlikleri tabloya ekle
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>";
                         echo "<td>" . $row["event_date"] . "</td>";
@@ -133,7 +167,6 @@
                     echo "<tr><td colspan='3'>Etkinlik bulunamadı.</td></tr>";
                 }
 
-                // Bağlantıyı kapat
                 $conn->close();
                 ?>
             </table>
